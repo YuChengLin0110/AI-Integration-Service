@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: AI-Integration-Service
+openai:
+  enabled: false
