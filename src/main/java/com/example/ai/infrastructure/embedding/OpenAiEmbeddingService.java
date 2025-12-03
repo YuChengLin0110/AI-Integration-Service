@@ -1,10 +1,10 @@
 package com.example.ai.infrastructure.embedding;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import com.openai.client.OpenAIClient;
-import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.embeddings.CreateEmbeddingResponse;
 import com.openai.models.embeddings.EmbeddingCreateParams;
 
@@ -15,8 +15,9 @@ public class OpenAiEmbeddingService implements EmbeddingService{
 	// OpenAIClient：負責呼叫 OpenAI Embedding API
 	private final OpenAIClient client;
 	
-	public OpenAiEmbeddingService () {
-		this.client = OpenAIOkHttpClient.fromEnv();
+	@Autowired
+	public OpenAiEmbeddingService (OpenAIClient client) {
+		this.client = client;
 	}
 	
 	/*

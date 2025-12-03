@@ -63,6 +63,13 @@
 			<artifactId>openai-java</artifactId>
 			<version>4.8.0</version>
 		</dependency>
+		
+		<!--  Google Gemini -->
+			<dependency>
+				<groupId>com.google.genai</groupId>
+				<artifactId>google-genai</artifactId>
+				<version>1.28.0</version>
+			</dependency>
 	</dependencies>
 
 	<build>

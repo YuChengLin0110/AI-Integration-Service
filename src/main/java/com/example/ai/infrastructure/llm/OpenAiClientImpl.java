@@ -2,12 +2,12 @@ package com.example.ai.infrastructure.llm;
 
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import com.example.ai.domain.model.AiModelType;
 import com.openai.client.OpenAIClient;
-import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.ChatModel;
 import com.openai.models.chat.completions.ChatCompletion;
 import com.openai.models.chat.completions.ChatCompletionCreateParams;
@@ -18,8 +18,9 @@ public class OpenAiClientImpl implements AiModelClient {
 	
 	private OpenAIClient client;
 	
-	public OpenAiClientImpl() {
-		this.client = OpenAIOkHttpClient.fromEnv();
+	@Autowired
+	public OpenAiClientImpl(OpenAIClient client) {
+		this.client = client;
 	}
 	
 	@Override
