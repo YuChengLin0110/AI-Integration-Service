@@ -1,7 +1,7 @@
 # AI-Integration-Service
 
 RAG（Retrieval-Augmented Generation）專案，可將私有文件轉向量、存入向量庫，並結合不同 LLM (OpenAI、Gemini 等）做問答  
-流程：上傳 PDF/文字 -> 分段 -> Embedding -> VectorStore -> 問答
+流程：上傳 -> 分段 -> Embedding -> VectorStore -> 問答
 
 ## 功能說明
 
@@ -23,3 +23,14 @@ RAG（Retrieval-Augmented Generation）專案，可將私有文件轉向量、�
 - Spring Boot REST API
 - 架構可擴展至多模型（ OpenAI、Gemini 或其他 LLM ）
 - RAG Pipeline 將私有文件與 LLM 結合，保證回答準確度
+
+## 模型整合架構（Factory + Strategy Pattern）
+
+本專案支援多個 LLM（如 OpenAI、Gemini）
+
+為避免程式碼寫死依賴某個模型，採用 工廠模式 + 策略模式 管理不同模型的呼叫方式 : 
+
+- AiModelType（enum）：定義可選模型
+- 各模型實作（OpenAiClient、GeminiClient 等）：封裝各自 SDK 與差異
+- AiModelFactory：根據 AiModelType 回傳對應的 AiModelClient 實例
+- 新增模型只需新增 enum & 實作，不需修改現有程式碼
