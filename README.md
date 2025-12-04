@@ -1,6 +1,7 @@
 # AI-Integration-Service
 
 AI RAG（Retrieval-Augmented Generation）專案，將私有文件轉為向量存入向量庫，並結合不同 LLM（OpenAI、Gemini 等）進行問答
+
 核心流程：文件上傳 → 分段 → Embedding → 向量存儲 → 問答
 
 ## 功能說明
