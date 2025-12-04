@@ -1,16 +1,15 @@
 package com.example.ai.application;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.example.ai.domain.model.AiModelType;
 import com.example.ai.domain.model.AiResponse;
+import com.example.ai.domain.model.EmbeddingModelType;
 import com.example.ai.domain.service.RagService;
 
 @RestController
@@ -26,8 +25,8 @@ public class RagController {
 	
 	// 問答
 	@PostMapping("/query")
-	public AiResponse query(@RequestParam String question, @RequestParam(defaultValue = "DUMMY") AiModelType model) {
-		return ragService.query(question, model);
+	public AiResponse query(@RequestBody String question, @RequestParam(defaultValue = "DUMMY") AiModelType aiModel, @RequestParam(defaultValue = "DUMMY") EmbeddingModelType embeddingModel) {
+		return ragService.query(question, aiModel, embeddingModel);
 	}
 	
 	// PDF 上傳

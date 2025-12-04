@@ -8,7 +8,7 @@ import java.util.Map;
  * */
 public class PromptBuilder {
 	private String template; // Prompt 模板字串，例如 "問題: {{question}}，上下文: {{context}}"
-	private Map<String, String> values = new HashMap<>(); // 存放要替換的 key-value
+	private Map<String, String> variables = new HashMap<>(); // 存放要替換的 key-value
 	
 	public PromptBuilder setTemplate(String template) {
 		this.template = template;
@@ -18,8 +18,8 @@ public class PromptBuilder {
 	/*
 	 * 新增或更新模板中要替換的值
 	 * */
-	public PromptBuilder addValues(String key, String value) {
-		values.put(key, value);
+	public PromptBuilder addvariables(String key, String value) {
+		variables.put(key, value);
 		return this;
 	}
 	
@@ -29,6 +29,6 @@ public class PromptBuilder {
      */
 	public String build() {
 		PromptTemplate pt = new PromptTemplate(template);
-		return pt.render(values);
+		return pt.render(variables);
 	}
 }

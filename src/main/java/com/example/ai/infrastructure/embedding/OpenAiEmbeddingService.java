@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
+import com.example.ai.domain.model.EmbeddingModelType;
 import com.openai.client.OpenAIClient;
 import com.openai.models.embeddings.CreateEmbeddingResponse;
 import com.openai.models.embeddings.EmbeddingCreateParams;
@@ -18,6 +19,11 @@ public class OpenAiEmbeddingService implements EmbeddingService{
 	@Autowired
 	public OpenAiEmbeddingService (OpenAIClient client) {
 		this.client = client;
+	}
+	
+	@Override
+	public EmbeddingModelType getModelType() {
+		return EmbeddingModelType.OPENAI;
 	}
 	
 	/*

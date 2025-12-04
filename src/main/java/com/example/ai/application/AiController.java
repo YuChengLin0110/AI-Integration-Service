@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.ai.domain.model.AiModelType;
 import com.example.ai.domain.model.AiResponse;
-import com.example.ai.domain.model.PromptRequest;
 import com.example.ai.domain.service.AiService;
 import com.example.ai.factory.AiServiceFactory;
 
@@ -25,13 +24,13 @@ public class AiController {
 	}
 	
 	@PostMapping("/completion")
-	public AiResponse completion(@RequestBody PromptRequest request, @RequestParam(defaultValue = "DUMMY") AiModelType model) {
+	public AiResponse completion(@RequestBody String question, @RequestParam(defaultValue = "DUMMY") AiModelType model) {
 		AiService service = aiServiceFactory.getService(model);
 		if(service == null) {
 			throw new IllegalArgumentException("No AiService for model: " + model);
 		}
 		
-		return service.complete(request);
+		return service.complete(question);
 	}
 	
 }

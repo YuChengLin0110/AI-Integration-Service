@@ -7,7 +7,10 @@ import org.springframework.stereotype.Component;
 
 import com.example.ai.domain.model.AiModelType;
 import com.example.ai.domain.model.AiResponse;
+import com.example.ai.domain.model.EmbeddingModelType;
 import com.example.ai.factory.AiModelClientFactory;
+import com.example.ai.factory.EmbeddingModeFactory;
+import com.example.ai.formatter.PromptFormatter;
 import com.example.ai.infrastructure.embedding.EmbeddingService;
 import com.example.ai.infrastructure.llm.AiModelClient;
 import com.example.ai.infrastructure.vectorstores.VectorStore;
@@ -15,50 +18,38 @@ import com.example.ai.infrastructure.vectorstores.VectorStore;
 @Component
 public class RagPipeline {
 	
-	private final AiModelClientFactory aiModelClientFactory;
-	private final VectorStore vectorStore;
-	private final EmbeddingService embeddingService;
+	private final AiModelClientFactory aiModelClientFactory; // AI 模型的客戶端工廠
+	private final VectorStore vectorStore; // 向量資料庫，用於相似度搜尋
+	private final EmbeddingModeFactory embeddingModelFactory; // Embedding模型工廠
+	private final PromptFormatter promptFormatter; // 組成prompt
 	
 	@Autowired
-	public RagPipeline(AiModelClientFactory aiModelClientFactory, VectorStore vectorStore, EmbeddingService embeddingService) {
+	public RagPipeline(AiModelClientFactory aiModelClientFactory, VectorStore vectorStore, EmbeddingModeFactory embeddingModelFactory,PromptFormatter promptFormatter) {
 		this.aiModelClientFactory = aiModelClientFactory;
 		this.vectorStore = vectorStore;
-		this.embeddingService = embeddingService;
+		this.embeddingModelFactory = embeddingModelFactory;
+		this.promptFormatter = promptFormatter;
 	}
 	
 	/*
 	 * 問答方法：
 	 * 將問題向量化 -> 找出最相似的文本段落 -> 組成 Prompt -> 呼叫 LLM 生成答案
 	 * */
-	public AiResponse query(String question, AiModelType model) {
+	public AiResponse query(String question, AiModelType aiModel, EmbeddingModelType embeddingModel) {
+		EmbeddingService embeddingService = embeddingModelFactory.getEmbeddingService(embeddingModel);
 		
 		// 將問題轉向量
 		float[] queryVector = embeddingService.getEmbedding(question);
 		
-		// 將向量轉成逗號分隔的字串，方便 VectorStore 接收
-		StringBuilder sb = new StringBuilder();
-		for(int i = 0 ; i < queryVector.length ; i++) {
-			sb.append(queryVector[i]);
-			if(i != queryVector.length -1) {
-				sb.append(",");
-			}
-		}
-		
-		String queryStr = sb.toString();
-		
 		// 取得 TopK 最相似的文本段落
-		List<String> chunks = vectorStore.similaritySearch(queryStr, 3);
+		List<String> topKChunks = vectorStore.similaritySearch(queryVector, 3);
 		
-		// 組合 prompt 給 LLM，格式：
-		// 「根據以下內容回答問題：<chunk1> <chunk2> <chunk3>...  問題：<question>」
-		StringBuilder promptBuilder = new StringBuilder();
-		promptBuilder.append("根據以下內容回答問題 : \n");
-		chunks.forEach(chunk -> promptBuilder.append(chunk).append("\n"));
-		promptBuilder.append("問題 : ").append(question);
+		// 組成 prompt
+		String prompt = promptFormatter.formatRagPrompt(question, topKChunks);
 		
 		// 取得對應 LLM ， 生成答案
-		AiModelClient client = aiModelClientFactory.getClient(model);
-		String answer = client.completion(promptBuilder.toString());
+		AiModelClient client = aiModelClientFactory.getClient(aiModel);
+		String answer = client.completion(prompt);
 
 		return new AiResponse(answer);
 	}

@@ -28,16 +28,10 @@ public class InMemoryVectorStore implements VectorStore{
      * 相似度檢索 topK 段落
      */
 	@Override
-	public List<String> similaritySearch(String queryEmbeddingStr, int topK) {
-		// 將字串轉成 float[]
-		String[] parts = queryEmbeddingStr.split(",");
-		float[] queryVec = new float[parts.length];
-		for(int i = 0 ; i < parts.length ; i++) {
-			queryVec[i] = Float.parseFloat(parts[i]);
-		}
-		
+	public List<String> similaritySearch(float[] queryVec, int topK) {
 		// 以 min-heap 取 topK 分數高的
 		PriorityQueue<ScoredChunk> scoredHeap = new PriorityQueue<>((a, b) -> Float.compare(a.score, b.score));
+		
 		// 遍歷所有文件和向量，計算相似度
 		for(String docId : vectorMap.keySet()) {
 			List<float[]> vecs = vectorMap.get(docId);

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.ai.domain.model.EmbeddingModelType;
 import com.example.ai.domain.service.DocumentService;
 
 @RestController
@@ -21,13 +22,13 @@ public class UploadController {
 	}
 	
 	@PostMapping("/upload")
-	public ResponseEntity<String> uploadDocument(@RequestParam("file") MultipartFile file) {
+	public ResponseEntity<String> uploadDocument(@RequestParam("file") MultipartFile file, @RequestParam(defaultValue = "DUMMY") EmbeddingModelType model) {
 		if(file == null || file.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("File is empty");
 		}
 		
 		try {
-			String documentId = documentService.uploadDocument(file);
+			String documentId = documentService.uploadDocument(file, model);
 			return ResponseEntity.ok(documentId);
 		} catch (Exception e) {
 			e.printStackTrace();

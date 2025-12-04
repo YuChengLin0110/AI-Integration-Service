@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.example.ai.core.pipeline.RagPipeline;
 import com.example.ai.domain.model.AiModelType;
 import com.example.ai.domain.model.AiResponse;
+import com.example.ai.domain.model.EmbeddingModelType;
 import com.example.ai.domain.service.RagService;
 
 @Service
@@ -19,8 +20,8 @@ public class RagServiceImpl implements RagService{
 	}
 	
 	@Override
-	public AiResponse query(String question, AiModelType model) {
-		return pipeline.query(question, model);
+	public AiResponse query(String question, AiModelType aiModel, EmbeddingModelType embeddingModel) {
+		return pipeline.query(question, aiModel, embeddingModel);
 	}
 
 //	@Override
