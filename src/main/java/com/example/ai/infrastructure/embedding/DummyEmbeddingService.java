@@ -1,5 +1,9 @@
 package com.example.ai.infrastructure.embedding;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.example.ai.domain.model.EmbeddingModelType;
@@ -19,5 +23,4 @@ public class DummyEmbeddingService implements EmbeddingService{
 	public float[] getEmbedding(String text) {
 		return new float[768];
 	}
-
 }

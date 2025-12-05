@@ -45,6 +45,7 @@ public class OpenAiEmbeddingService implements EmbeddingService{
 			var first = resp.data().get(0);
 			var vector = first.embedding();
 			float[] embedding = new float[vector.size()];
+			
 			for(int i = 0 ; i < vector.size(); i++) {
 				embedding[i] = vector.get(i);
 			}

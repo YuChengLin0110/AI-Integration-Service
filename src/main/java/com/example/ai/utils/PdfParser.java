@@ -12,11 +12,36 @@ import org.apache.pdfbox.text.PDFTextStripper;
  * */
 public class PdfParser {
 	
+	/*
+	 * 解析整份 PDF
+	 * */
 	public static String parseToText(File file) throws IOException {
 		try (PDDocument  doc = Loader.loadPDF(file)) {
 			PDFTextStripper stripper = new PDFTextStripper();
 			stripper.setSortByPosition(true); // 設定按位置排序文字，保持原本排版順序
 			return stripper.getText(doc); // 取得 PDF 文字
+		}
+	}
+	
+	/*
+	 * 解析指定頁範圍
+	 * */
+	public static String parseToText(File file, int startPage, int endPage) throws IOException {
+		try (PDDocument doc = Loader.loadPDF(file)) {
+			PDFTextStripper stripper = new PDFTextStripper();
+			stripper.setSortByPosition(true);
+			stripper.setStartPage(startPage);
+			stripper.setEndPage(endPage);
+			return stripper.getText(doc);
+		}
+	}
+	
+	/*
+	 * 取得 PDF 總頁數
+	 * */
+	public static int getPageCount(File file) throws IOException {
+		try (PDDocument doc = Loader.loadPDF(file)) {
+			return doc.getNumberOfPages();
 		}
 	}
 	
