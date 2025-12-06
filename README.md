@@ -11,6 +11,7 @@ AI RAG（Retrieval-Augmented Generation）專案，將私有文件轉為向量�
 - 自動將文件切分為多個段落 chunk
 - 多執行緒 Embedding 處理：加速大型文件處理
 - 存入向量資料庫（VectorStore），方便後續相似度檢索
+- 支援 Top-K 相似度搜尋，用於 RAG 問答
 
 ### RAG 問答
 - 對使用者問題進行向量化
@@ -49,3 +50,9 @@ AI RAG（Retrieval-Augmented Generation）專案，將私有文件轉為向量�
 - 將 PDF 以 batch 讀取
 - 每 batch 切成多個 chunk
 - 使用執行緒池 平行發送 Embedding 請求
+
+## PostgreSQL / Docker 啟動
+
+本專案的向量資料庫使用 PostgreSQL + pgvector，透過 Docker Compose 部署
+
+並搭配初始化 SQL（init-db）自動建表與安裝 pgvector extension
