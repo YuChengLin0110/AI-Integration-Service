@@ -4,12 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.ai.domain.model.AiModelType;
 import com.example.ai.domain.model.AiResponse;
-import com.example.ai.domain.model.EmbeddingModelType;
+import com.example.ai.domain.model.RagQueryRequest;
+import com.example.ai.domain.model.VectorStoreType;
 import com.example.ai.domain.service.RagService;
 
 @RestController
@@ -25,8 +24,9 @@ public class RagController {
 	
 	// 問答
 	@PostMapping("/query")
-	public AiResponse query(@RequestBody String question, @RequestParam(defaultValue = "DUMMY") AiModelType aiModel, @RequestParam(defaultValue = "DUMMY") EmbeddingModelType embeddingModel) {
-		return ragService.query(question, aiModel, embeddingModel);
+	public AiResponse query(@RequestBody RagQueryRequest request) {
+		VectorStoreType storeType = VectorStoreType.INMEMORY;
+		return ragService.query(request.getQuestion(), request.getAiModel(), request.getEmbeddingModel(), storeType);
 	}
 	
 	// PDF 上傳

@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: user # 建立預設資料庫使用者
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db # 啟動時自動建立一個名為 db 的資料庫
+    ports:
+      - "5432:5432" # 對外映射 Postgres port，讓本機可連線
+    volumes:
+      - ./init-db:/docker-entrypoint-initdb.d # 把專案中的 init-db 資料夾掛載到 Postgres 初始化腳本目錄，這裡放 .sql 或 .sh 就會在容器啟動時自動執行
+      - pgdata:/var/lib/postgresql/data # 把資料存到本機的 Docker volume，容器刪掉資料仍會保留
+
+volumes:
+  pgdata: # 定義一個 named volume，用來保存 Postgres 資料

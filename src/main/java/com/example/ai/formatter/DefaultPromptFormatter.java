@@ -32,8 +32,8 @@ public class DefaultPromptFormatter implements PromptFormatter{
 						 問題：
 						 {{question}}
 						""")
-				.addvariables(allChunks, allChunks)
-				.addvariables(question, question)
+				.addvariables("allChunks", allChunks)
+				.addvariables("question", question)
 				.build();
 	}
 	

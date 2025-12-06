@@ -7,6 +7,7 @@ import com.example.ai.core.pipeline.RagPipeline;
 import com.example.ai.domain.model.AiModelType;
 import com.example.ai.domain.model.AiResponse;
 import com.example.ai.domain.model.EmbeddingModelType;
+import com.example.ai.domain.model.VectorStoreType;
 import com.example.ai.domain.service.RagService;
 
 @Service
@@ -20,8 +21,8 @@ public class RagServiceImpl implements RagService{
 	}
 	
 	@Override
-	public AiResponse query(String question, AiModelType aiModel, EmbeddingModelType embeddingModel) {
-		return pipeline.query(question, aiModel, embeddingModel);
+	public AiResponse query(String question, AiModelType aiModel, EmbeddingModelType embeddingModel, VectorStoreType storeType) {
+		return pipeline.query(question, aiModel, embeddingModel, storeType);
 	}
 
 //	@Override

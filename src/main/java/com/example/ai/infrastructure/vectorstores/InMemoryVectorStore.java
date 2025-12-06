@@ -9,11 +9,18 @@ import java.util.PriorityQueue;
 
 import org.springframework.stereotype.Component;
 
+import com.example.ai.domain.model.VectorStoreType;
+
 @Component
 public class InMemoryVectorStore implements VectorStore{
 	
 	private Map<String, List<float[]>> vectorMap = new HashMap<>(); // 文件 ID -> 向量列表
 	private Map<String, List<String>> chunkMap = new HashMap<>(); // 文件 ID -> 對應文字段落
+	
+	@Override
+	public VectorStoreType getVectorStoreType() {
+		return VectorStoreType.INMEMORY;
+	}
 	
 	/*
      * 新增文件的向量與段落
@@ -87,5 +94,7 @@ public class InMemoryVectorStore implements VectorStore{
 			this.score = score;
 		}
 	}
+
+
 
 }

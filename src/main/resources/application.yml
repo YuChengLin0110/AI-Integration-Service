@@ -1,5 +1,17 @@
 spring:
   application:
     name: AI-Integration-Service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/db # Postgres JDBC
+    # url: jdbc:postgresql://postgres:5432/db springboot 和 db 都在 Docker
+    username: user  # 資料庫帳號（需與 docker-compose 一致）
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: none # Hibernate 不自動建立或修改資料表
+    properties:
+      hibernate:
+        format_sql: true # 將 Hibernate 印出的 SQL 格式化成易讀格式
+
 openai:
   enabled: false

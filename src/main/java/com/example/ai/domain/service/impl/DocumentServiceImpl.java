@@ -1,7 +1,6 @@
 package com.example.ai.domain.service.impl;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,8 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.ai.domain.model.EmbeddingModelType;
+import com.example.ai.domain.model.VectorStoreType;
 import com.example.ai.domain.service.DocumentService;
 import com.example.ai.factory.EmbeddingModeFactory;
+import com.example.ai.factory.VectorStoreFactory;
 import com.example.ai.infrastructure.embedding.EmbeddingService;
 import com.example.ai.infrastructure.vectorstores.VectorStore;
 import com.example.ai.utils.EmbeddingBatcher;
@@ -22,13 +23,13 @@ import com.example.ai.utils.TextChunker;
 public class DocumentServiceImpl implements DocumentService {
 
 	private final EmbeddingModeFactory embeddingModeFactory; // 負責將文字轉為向量
-	private final VectorStore vectorStore; // 負責儲存文件段落與對應向量，用於相似度檢索
+	private final VectorStoreFactory vectorStoreFactory; // 向量庫工廠
 	private final int BATCH_SIZE = 20;
 
 	@Autowired
-	public DocumentServiceImpl(EmbeddingModeFactory embeddingModeFactory, VectorStore vectorStore) {
+	public DocumentServiceImpl(EmbeddingModeFactory embeddingModeFactory, VectorStoreFactory vectorStoreFactory) {
 		this.embeddingModeFactory = embeddingModeFactory;
-		this.vectorStore = vectorStore;
+		this.vectorStoreFactory = vectorStoreFactory;
 	}
 
 	/*
@@ -38,7 +39,7 @@ public class DocumentServiceImpl implements DocumentService {
 	 * 透過多執行緒平行發送 embedding 請求 以提升效能 
 	 */
 	@Override
-	public String uploadDocument(MultipartFile file, EmbeddingModelType model) throws Exception {
+	public String uploadDocument(MultipartFile file, EmbeddingModelType model, VectorStoreType storeType) throws Exception {
 		// 取得原始檔名並驗證格式
 		String fileName = file.getOriginalFilename();
 		if (fileName == null || !fileName.toLowerCase().endsWith(".pdf")) {
@@ -78,6 +79,7 @@ public class DocumentServiceImpl implements DocumentService {
 				List<float[]> embeddings = EmbeddingBatcher.embedAll(chunks, embeddingService);
 
 				// 將 chunk 與 embeddings 存入 VectorStore
+				VectorStore vectorStore = vectorStoreFactory.getStore(storeType);
 				vectorStore.addDocument(documentId, chunks, embeddings);
 			}
 		} finally {
